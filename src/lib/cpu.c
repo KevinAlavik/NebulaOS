@@ -1,4 +1,4 @@
-#include "cpu.h"
+#include#include "cpu.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -72,4 +72,23 @@ void executeInstruction(CPU *cpu, Memory *mem, const char *instruction) {
         }
     }
     printf("Unsupported instruction: %s\n", instruction);
+}
+
+void loadROM(CPU *cpu, const uint8_t* program, uint16_t programSize) {
+    if (programSize > sizeof(cpu->ROM)) {
+        printf("Program size exceeds ROM capacity.\n");
+        return;
+    }
+
+    memcpy(cpu->ROM, program, programSize);
+}
+
+void runCPULoop(CPU *cpu, Memory *mem) {
+    while (1) {
+        uint8_t instruction = mem->read(cpu->PC);
+        executeInstruction(cpu, mem, instruction);
+        if (instruction == OPCODE_HLT) {
+            break;
+        }
+    }
 }
