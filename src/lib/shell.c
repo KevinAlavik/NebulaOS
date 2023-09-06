@@ -5,16 +5,20 @@
 #include "commands.h"
 #include "cpu.h"
 #include "memory.h"
+#include "fs.h"
+
+#define PROMPT "nsh> "
 
 void initializeShell(Shell *shell) {
 
 }
 
-void runShell(Shell *shell, CPU* cpu, Memory* memory) {
+void runShell(Shell *shell, CPU* cpu, FileSystem* fs, Memory* memory) {
     char input[256];
     
+    handleCommand(&shell, &memory, &fs, "hello");
     while (1) {
-        printf("nos> ");
+        printf(PROMPT);
         
         if (fgets(input, sizeof(input), stdin) != NULL) {
             input[strcspn(input, "\n")] = '\0';
@@ -24,7 +28,7 @@ void runShell(Shell *shell, CPU* cpu, Memory* memory) {
                 break;
             }
             
-            handleCommand(&shell, &memory, input);
+            handleCommand(&shell, &memory, &fs, input);
         }
     }
 }

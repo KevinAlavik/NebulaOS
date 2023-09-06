@@ -12,18 +12,17 @@ int main() {
     FileSystem fs;
     Memory mem;
 
+    createFile(&fs, "root", "example.txt");
+    writeFile(&fs, "root", "example.txt", "Hello, World!");
+
     initializeCPU(&cpu, &mem);
     initializeShell(&shell);
     initializeFileSystem(&fs);
     initializeMemory(&mem);
 
     clear_screen();
-
-    printf("** Nebula OS Command Interface ***\n");
-    printf("Booted into command interface\n");
-    printf("Free ram %u\n", getFreeMemory(&mem));
     
-    runShell(&shell, &cpu, &mem);
+    runShell(&shell, &cpu, &fs, &mem);
 
     return 0;
 }
