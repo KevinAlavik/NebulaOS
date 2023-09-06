@@ -2,16 +2,25 @@
 #define CPU_H
 
 #include <stdint.h>
-#include "memory.h"  // Include Memory module
+#include "memory.h"
 
-// Define CPU structure with registers
 typedef struct {
-    uint8_t A;
-    uint8_t PC;
-    Memory* memory;
+    uint16_t R[16];
+    uint16_t PC;
+    uint16_t SP;
+    uint16_t FLAGS;
+    uint16_t IR;
+    uint16_t MMU[4];
+    float F[8];
+    __m128i V[8];
+    uint16_t BP[4];
+    uint16_t WP[4];
+    uint16_t TR[4];
+    uint8_t ROM[0x2000];
+    uint8_t RAM[0xDE00];
 } CPU;
 
-void initializeCPU(CPU *cpu, Memory *mem);  // Pass Memory as a parameter
-void executeInstruction(CPU *cpu, Memory *mem, const char *instruction);  // Pass Memory as a parameter
+void initializeCPU(CPU *cpu, Memory *mem);
+void executeInstruction(CPU *cpu, Memory *mem, const char *instruction);
 
 #endif /* CPU_H */
