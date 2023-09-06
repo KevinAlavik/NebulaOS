@@ -5,6 +5,7 @@
 #include "memory.h"
 #include "utils.h"
 #include "fs.h"
+#include "cpu.h"
 
 void handleLaunch(Memory *mem)
 {
@@ -92,9 +93,25 @@ void listFiles(FileSystem* fs) {
     }
 }
 
+void test(CPU* cpu) {
+    uint8_t program[] = {
+        0x03, 0x00, 0x01,
+        0x03, 0x01, 0x01,
+        0x01, 0x02, 0x00,
+        0x05
+    };
+
+    uint16_t programSize = sizeof(program);
+    printf("Loading program to ROM (%s bytes)\n", programSize);
+    loadROM(cpu, program, programSize);
+    printf("done.\n");
+    runCPULoop(cpu, NULL);
+    printf("Result Address: 0x%X\n", &cpu->R[2]);
+    printf("Result Value: %d\n", cpu->R[2]);
+}
 
 
-void handleCommand(Shell *shell, Memory *mem,FileSystem* fs, const char *command)
+void handleCommand(Shell *shell, Memory *mem,FileSystem* fs, const char *command, CPU* cpu)
 {
     char commandCopy[256];
     strcpy(commandCopy, command);
@@ -110,6 +127,10 @@ void handleCommand(Shell *shell, Memory *mem,FileSystem* fs, const char *command
         else if (strcmp(token, "ls") == 0)
         {
             listFiles(&fs);
+        }
+        else if (strcmp(token, "test") == 0)
+        {
+            test(&cpu);
         }
         else if (strcmp(token, "hello") == 0)
         {
