@@ -28,9 +28,18 @@ int main() {
         0x05             
     };
 
-    printf("Loading program into ROM (%d bytes)\n", sizeof(machineCode) / sizeof(machineCode[0]));
-    loadROM(&cpu, machineCode, sizeof(machineCode) / sizeof(machineCode[0]));
+    printf("Loading program into ROM (%d bytes)\n", sizeof(machineCode));
+    loadROM(&cpu, machineCode, sizeof(machineCode));
+    printf("done.\n\nRunning program...\n");
+    runProgram(&cpu, &mem, sizeof(machineCode));
     printf("done.\n");
-    runProgram(&cpu, &mem, sizeof(machineCode) / sizeof(machineCode[0]));
+
+    // Print the CPU state, including register values
+    
+    for (int i = 0; i < 16; i++) {
+        printf("R%d: 0x%04X\n", i, &cpu.R[i]);
+    }
+
     return 0;
 }
+
