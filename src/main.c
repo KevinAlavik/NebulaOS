@@ -32,14 +32,14 @@ int main() {
     loadROM(&cpu, machineCode, sizeof(machineCode));
     printf("done.\n\nRunning program...\n");
     runProgram(&cpu, &mem, sizeof(machineCode));
-    printf("done.\n");
+    printf("done.\n\n");
 
-    // Print the CPU state, including register values
-    
-    for (int i = 0; i < 16; i++) {
-        printf("R%d: 0x%04X\n", i, &cpu.R[i]);
-    }
+    // Calculate and print free and used bytes of ROM
+    uint16_t freeBytes = MAX_ROM_SIZE - cpu.PC;
+    uint16_t usedBytes = cpu.PC;
+
+    printf("Free bytes of ROM: %d\n", freeBytes);
+    printf("Used bytes of ROM: %d\n", usedBytes);
 
     return 0;
 }
-
