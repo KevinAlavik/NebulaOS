@@ -1,3 +1,4 @@
-MOV R0, 0x01
-ADD R0, R0, 0x01
-HLT
+MOV R0, 1    
+MOV R1, 1    
+ADD R0, R1   
+HLT         

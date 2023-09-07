@@ -1,77 +1,78 @@
 #include "assembler.h"
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
-static const struct {
+#define INSTRUCTION_ADD "ADD"
+#define INSTRUCTION_SUB "SUB"
+#define INSTRUCTION_MOV "MOV"
+#define INSTRUCTION_JMP "JMP"
+#define INSTRUCTION_HLT "HLT"
+
+#define OPCODE_ADD 0x01
+#define OPCODE_SUB 0x02
+#define OPCODE_MOV 0x03
+#define OPCODE_JMP 0x04
+#define OPCODE_HLT 0x05
+
+typedef struct {
     const char* name;
     uint8_t opcode;
-} instructionTable[] = {
-    {"ADD", 0x01},
-    {"SUB", 0x02},
-    {"MOV", 0x03},
-    {"JMP", 0x04},
-    {"HLT", 0x05},
+} Instruction;
+
+static const Instruction instructionTable[] = {
+    {INSTRUCTION_ADD, OPCODE_ADD},
+    {INSTRUCTION_SUB, OPCODE_SUB},
+    {INSTRUCTION_MOV, OPCODE_MOV},
+    {INSTRUCTION_JMP, OPCODE_JMP},
+    {INSTRUCTION_HLT, OPCODE_HLT},
 };
 
-static uint8_t findOpcode(const char* instruction) {
-    for (size_t i = 0; i < sizeof(instructionTable) / sizeof(instructionTable[0]); i++) {
+static uint8_t getOpcode(const char* instruction) {
+    for (int i = 0; i < sizeof(instructionTable) / sizeof(instructionTable[0]); i++) {
         if (strcmp(instruction, instructionTable[i].name) == 0) {
             return instructionTable[i].opcode;
         }
     }
-    return 0xFF;
+    return 0;
 }
 
-int assemble(const char* assemblyCode, uint8_t* machineCode, size_t* machineCodeSize) {
-    if (assemblyCode == NULL || machineCode == NULL || machineCodeSize == NULL) {
-        return -1;
-    }
+int assembleProgram(const char* assemblyCode, uint8_t* machineCode, int machineCodeSize) {
+    int programSize = 0;
 
-    size_t machineCodeLen = 0;
-    size_t machineCodeCapacity = *machineCodeSize;
-
-    const char* delimiters = " \t,";
     char* token = strtok((char*)assemblyCode, "\n");
-
     while (token != NULL) {
-        char* parts[4];
-        int numParts = 0;
-        char* part = strtok(token, delimiters);
+        char instruction[4];
+        char operand1[4];
+        char operand2[4];
 
-        while (part != NULL && numParts < 4) {
-            parts[numParts++] = part;
-            part = strtok(NULL, delimiters);
+        int numTokens = sscanf(token, "%s %s %s", instruction, operand1, operand2);
+
+        if (numTokens == 3) {
+            uint8_t opcode = getOpcode(instruction);
+            if (opcode == 0) {
+                return -1;
+            }
+
+            int reg1 = atoi(operand1);
+            int reg2 = atoi(operand2);
+
+            if (reg1 < 0 || reg1 > 15 || reg2 < 0 || reg2 > 15) {
+                return -1;
+            }
+
+            if (programSize + 3 <= machineCodeSize) {
+                machineCode[programSize++] = opcode;
+                machineCode[programSize++] = (uint8_t)reg1;
+                machineCode[programSize++] = (uint8_t)reg2;
+            } else {
+                return -1;
+            }
+        } else {
+            return -1;
         }
-
-        if (numParts != 4 || parts[0] == NULL || parts[1] == NULL || parts[2] == NULL || parts[3] == NULL) {
-            return -2; // Invalid instruction format
-        }
-
-        uint8_t opcode = findOpcode(parts[0]);
-        if (opcode == 0xFF) {
-            return -3; // Unknown opcode
-        }
-
-        uint8_t operand1 = atoi(parts[1] + 1);
-        uint8_t operand2 = atoi(parts[2] + 1);
-        uint8_t operand3 = atoi(parts[3] + 1);
-
-        if (operand1 > 15 || operand2 > 15 || operand3 > 15) {
-            return -4; // Invalid operands
-        }
-
-        if (machineCodeLen + 4 > machineCodeCapacity) {
-            return -5; // Insufficient buffer size
-        }
-
-        machineCode[machineCodeLen++] = opcode;
-        machineCode[machineCodeLen++] = (operand1 << 4) | operand2;
-        machineCode[machineCodeLen++] = operand3;
 
         token = strtok(NULL, "\n");
     }
 
-    *machineCodeSize = machineCodeLen;
-
-    return 0; // Successful assembly
+    return programSize;
 }

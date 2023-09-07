@@ -87,8 +87,9 @@ void loadROM(CPU *cpu, const uint8_t* program, uint16_t programSize) {
     cpu->PC += programSize;
 }
 
-void runCPULoop(CPU *cpu, Memory *mem) {
-    while (cpu->PC < sizeof(cpu->ROM)) {
+void runProgram(CPU *cpu, Memory *mem, uint16_t programSize) {
+    printf("PROGRAM START\n");
+    while (cpu->PC < programSize) { // Use programSize as the loop condition
         uint16_t instructionAddress = cpu->PC;
         uint8_t instruction = readByte(mem, instructionAddress);
         executeInstruction(cpu, mem, instruction);
@@ -103,11 +104,11 @@ void runCPULoop(CPU *cpu, Memory *mem) {
         }
     }
 
-    if (cpu->PC >= sizeof(cpu->ROM)) {
-        printf("Program counter exceeded ROM size.\n");
+    if (cpu->PC >= programSize) { // Check against programSize, not sizeof(cpu->ROM)
+        printf("Program counter exceeded program size.\n");
     }
+    printf("PROGRAM END\n");
 }
-
 
 
 void printCPUState(const CPU *cpu) {

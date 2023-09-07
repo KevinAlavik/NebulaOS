@@ -2,8 +2,9 @@
 #define ASSEMBLER_H
 
 #include <stdint.h>
-#include <stdio.h>
 
-int assemble(const char* assemblyCode, uint8_t* machineCode, size_t* machineCodeSize);
+#define MAX_PROGRAM_SIZE 256
 
-#endif
+int assembleProgram(const char* assemblyCode, uint8_t* machineCode, int machineCodeSize);
+
+#endif // CPU_ASSEMBLER_H
