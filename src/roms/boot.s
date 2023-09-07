@@ -1,0 +1,3 @@
+MOV R0, 0x01
+ADD R0, R0, 0x01
+HLT

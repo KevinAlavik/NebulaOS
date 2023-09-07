@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #define MAX_MEMORY_SIZE 65536
+#define MAX_ROM_SIZE 16384
 
 typedef struct {
     uint8_t memory[MAX_MEMORY_SIZE];

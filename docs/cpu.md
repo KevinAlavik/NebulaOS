@@ -26,13 +26,18 @@ nerdy shit about the cpu
 
 ## Memory
 
+## Memory
+
 ### ROM (Read-Only Memory)
 - Address Range: [0xE000 - 0xFFFF]
+- Size: 16K (16384 bytes)
 - Purpose: Store machine code and firmware.
 
 ### RAM (Random Access Memory)
 - Address Range: [0x0000 - 0xDFFF]
+- Size: 64K (65536 bytes) 
 - Purpose: Used for data storage and manipulation during program execution.
+
 
 ## Features
 

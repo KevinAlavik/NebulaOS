@@ -26,5 +26,5 @@ void initializeCPU(CPU *cpu, Memory *mem);
 void executeInstruction(CPU *cpu, Memory *mem, const char *instruction);
 void loadROM(CPU *cpu, const uint8_t* program, uint16_t programSize);
 void runCPULoop(CPU *cpu, Memory *mem);
-
+void printCPUState(const CPU *cpu);
 #endif /* CPU_H */

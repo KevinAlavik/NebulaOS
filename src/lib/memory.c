@@ -21,10 +21,15 @@ void writeByte(Memory *mem, uint16_t address, uint8_t data) {
 }
 
 uint16_t readWord(Memory *mem, uint16_t address) {
-    uint16_t lowByte = readByte(mem, address);
-    uint16_t highByte = readByte(mem, address + 1);
-    return (highByte << 8) | lowByte;
+    if (address + 1 < MAX_MEMORY_SIZE) {
+        uint16_t lowByte = readByte(mem, address);
+        uint16_t highByte = readByte(mem, address + 1);
+        return (highByte << 8) | lowByte;
+    } else {
+        return 0;
+    }
 }
+
 
 void writeWord(Memory *mem, uint16_t address, uint16_t data) {
     writeByte(mem, address, data & 0xFF);
@@ -33,12 +38,13 @@ void writeWord(Memory *mem, uint16_t address, uint16_t data) {
 
 uint16_t getFreeMemory(Memory *mem) {
     uint16_t freeBytes = 0;
-    
+
     for (int i = 0; i < MAX_MEMORY_SIZE; i++) {
         if (mem->memory[i] == 0) {
             freeBytes++;
         }
     }
-    
-    return freeBytes;
+
+    return freeBytes-1;
 }
+
